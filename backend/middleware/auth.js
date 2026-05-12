@@ -3,8 +3,7 @@
 // ============================================================
 
 const jwt = require('jsonwebtoken');
-const proprietarioModel = require('../models/proprietari'); // Assicurati che il percorso sia giusto
-const sitterModel = require('../models/sitters');
+const userModel = require('../models/users'); // Assicurati che il percorso sia giusto
 
 
 // ── autenticato ───────────────────────────────────────────────
@@ -26,9 +25,11 @@ const autenticato = async (req, res, next) => {
   try {
     const token   = auth.split(' ')[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const Model = payload.tabella === 'proprietari' ? proprietarioModel : sitterModel;
-    const result = await Model.findById(payload.id);
+    console.log("Payload del Token:", payload);
+    const result = await userModel.findById(payload.userId);
+    
     const utente = result.rows[0];
+    console.log("Risultato Query DB:", result.rows);
 
     if (!utente) {
       // L'utente è stato eliminato dopo l'emissione del token
@@ -70,7 +71,7 @@ const soloAdmin = (req, res, next) => {
 const soloSéOAdmin = (req, res, next) => {
   const idRichiesto = parseInt(req.params.id);
   const isAdmin     = req.utente?.ruolo === 'admin';
-  const isSéStesso  = req.utente?.id    === idRichiesto;
+  const isSéStesso  = req.utente?.userId    === idRichiesto;
 
   if (!isAdmin && !isSéStesso) {
     return res.status(403).json({
@@ -81,25 +82,7 @@ const soloSéOAdmin = (req, res, next) => {
   next();
 };
 
-const soloSitter = (req, res, next) => {
-  if (req.utente.tabella !== 'sitters') {
-    return res.status(403).json({ 
-      successo: false, 
-      errore: 'Accesso negato: questa sezione è riservata ai Sitter' 
-    });
-  }
-  next();
-};
 
-const soloProprietari = (req, res, next) => {
-  if (req.utente.tabella !== 'proprietari') {
-    return res.status(403).json({ 
-      successo: false, 
-      errore: 'Accesso negato: questa sezione è riservata ai Proprietari' 
-    });
-  }
-  next();
-};
 
 // ── Esportazione ──────────────────────────────────────────────
-module.exports = { autenticato, soloAdmin, soloSéOAdmin, soloProprietari,soloSitter };
+module.exports = { autenticato, soloAdmin, soloSéOAdmin };

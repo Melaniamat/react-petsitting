@@ -21,7 +21,7 @@ const appuntamentiModel = require('./models/appuntamenti');
 
 // // Importiamo i router: ogni file routes gestisce un gruppo di endpoint
 const authRoutes = require('./routes/auth.routes')
-const userRoutes = require('./routes/user.routes')
+const userRoutes = require('./routes/users.routes')
 const animaliRoutes    = require('./routes/animali.routes');
 const appuntamentiRoutes = require('./routes/appuntamenti.routes');
 
@@ -66,8 +66,8 @@ app.get('/', (req, res) => {
 
 // ── Route principali ─────────────────────────────────────────
 // Ogni router gestisce il proprio gruppo di URL con prefisso /api/...
-app.use() //auth
-app.use() //user
+app.use('/api/auth',  authRoutes) //auth
+app.use('/api/users',userRoutes) //user
 app.use('/api/animali',    animaliRoutes);
 app.use('/api/appuntamenti', appuntamentiRoutes);
 

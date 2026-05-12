@@ -6,7 +6,7 @@ const router     = require('express').Router();
 const { body, param } = require('express-validator');
 const validate   = require('../middleware/validate');
 const controller = require('../controller/appuntamenti.controller');
-const { autenticato, soloAdmin, soloSitter,soloProprietari, soloSéOAdmin } = require('../middleware/auth');
+const { autenticato, soloAdmin, soloProprietari, soloSéOAdmin } = require('../middleware/auth');
 
 const regolaId = [
   param('id').isInt({ min: 1 }).withMessage('L\'id deve essere un numero intero positivo'),
@@ -27,12 +27,12 @@ const regolaCrea = [
 ];
 
 // Tutte le routes
-router.post('/',                 autenticato, regolaCrea,soloSitter, soloSéOAdmin, validate, controller.crea);
-router.get('/',                  autenticato, soloAdmin,soloSitter, controller.getAll);
-router.get('/:stato',            autenticato, soloSitter,soloAdmin,controller.getAllByStato);
-router.get('/:id',               autenticato, soloSitter,regolaId, validate, controller.getById);
-router.patch('/:id',             autenticato, soloSitter, soloSéOAdmin,regolaId, validate, controller.getById);
-router.patch('/:id/annulla',     autenticato, soloSitter, soloSéOAdmin,regolaId, validate, controller.annulla);
-router.delete('/:id',            autenticato, soloSitter, soloAdmin, regolaId, validate, controller.elimina);
+router.post('/',                 autenticato, regolaCrea, soloSéOAdmin, validate, controller.crea);
+router.get('/',                  autenticato, soloAdmin, controller.getAll);
+router.get('/:stato',            autenticato, soloAdmin,controller.getAllByStato);
+router.get('/:id',               autenticato, regolaId, validate, controller.getById);
+router.patch('/:id',             autenticato,  soloSéOAdmin,regolaId, validate, controller.getById);
+router.patch('/:id/annulla',     autenticato,  soloSéOAdmin,regolaId, validate, controller.annulla);
+router.delete('/:id',            autenticato,  soloAdmin, regolaId, validate, controller.elimina);
 
 module.exports = router;

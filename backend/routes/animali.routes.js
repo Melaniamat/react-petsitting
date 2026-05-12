@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { body, param } = require('express-validator');
 const validate   = require('../middleware/validate');
 const controller = require('../controller/animali.controller');
-const { autenticato, soloAdmin, soloProprietari } = require('../middleware/auth');
+const { autenticato, soloAdmin, soloProprietari, soloSéOAdmin } = require('../middleware/auth');
 
 const regolaId = [
   param('id').isInt({ min: 1 }).withMessage('Il id deve essere un numero intero positivo'),
@@ -50,10 +50,10 @@ const regolaAggiorna = [
 ];
 
 // Tutte le routes
-router.post('/', autenticato, soloProprietari, regolaCrea, validate, controller.crea);
+router.post('/', autenticato, soloSéOAdmin, regolaCrea, validate, controller.crea);
 router.get('/', autenticato, controller.getAll);
 router.get('/:id', autenticato, regolaId, validate, controller.getById);
-router.patch('/:id', autenticato,soloProprietari, regolaAggiorna, validate, controller.aggiorna);
-router.delete('/:id', autenticato, soloProprietari, regolaId, validate, controller.elimina);
+router.patch('/:id', autenticato,soloSéOAdmin, regolaAggiorna, validate, controller.aggiorna);
+router.delete('/:id', autenticato, soloSéOAdmin, regolaId, validate, controller.elimina);
 
 module.exports = router;

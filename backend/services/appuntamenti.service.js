@@ -10,14 +10,14 @@
 // ============================================================
 
 const appuntamentiModel = require('../models/appuntamenti');
-const sitterModel = require('../models/sitters');
+const userModel = require('../models/users');
 const animaleModel = require('../models/animali');
 
 // Crea un nuovo appuntamento dopo aver verificato che l'ISBN non sia già presente.
 const crea = async (dati) => {
 
   const animale= await animaleModel.findById(dati.animale_id);
-  const sitter= await sitterModel.findById(dati.sitter_id);
+  const sitter= await userModel.findById(dati.sitter_id);
 
 
   if (!animale.rows.length || !sitter.rows.length ) {

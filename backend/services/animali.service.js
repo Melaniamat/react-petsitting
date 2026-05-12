@@ -1,16 +1,11 @@
-// ============================================================
-// services/prestiti.service.js — Logica di business per i prestiti
-// ============================================================
-
-
 const animaliModel  = require('../models/animali');
-const proprietarioModel  = require('../models/proprietari');
+const userModel  = require('../models/users');
 
 
 
 const crea = async ({ nome,tipo,note,proprietario_id}) => {
   
-  const proprietario= await proprietarioModel.findById(proprietario_id);
+  const proprietario= await userModel.findById(proprietario_id);
   
   if (!proprietario.rows.length) {
     const err = new Error('proprietario non trovato');
