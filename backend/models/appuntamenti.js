@@ -4,7 +4,7 @@ const CREATE_TABLE = `
   CREATE TABLE IF NOT EXISTS appuntamenti (
     id                          SERIAL      PRIMARY KEY,
     animale_id                   INTEGER     NOT NULL REFERENCES animali(id) ON DELETE CASCADE,
-    sitter_id                    INTEGER     NOT NULL REFERENCES sitters(id)  ON DELETE CASCADE,
+    sitter_id                    INTEGER     NOT NULL REFERENCES users(id)  ON DELETE CASCADE,
     data_appuntamento            DATE        NOT NULL DEFAULT CURRENT_DATE,
     stato                       VARCHAR(20) NOT NULL DEFAULT 'attivo'
                                 CHECK (stato IN ('attivo', 'annullato', 'completato')),
@@ -20,45 +20,52 @@ const init = () => pool.query(CREATE_TABLE);
 const findAll = () =>
   pool.query(
     `SELECT
-       a.*,
+       app.*,
+       an.nome AS nome_animale,
+       an.tipo AS tipo_animale,
        p.nome || ' ' || p.cognome AS proprietario_nome,
-       p.email                    AS proprietario_email,
+       p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email                    AS sitter_email,
-     FROM appuntamenti a
-     JOIN animali p ON p.id = a.proprietario_id
-     JOIN sitter  s ON s.id = a.sitter_id
-     ORDER BY p.data_appuntamento DESC`
+       s.email AS sitter_email,
+     FROM appuntamenti app
+     JOIN animali an ON an.id = app.animale_id
+     JOIN users p ON p.id = an.proprietario_id
+     JOIN users s ON s.id = app.sitter_id
+     ORDER BY app.data_appuntamento DESC`
   );
 const findAllByStato = (stato) =>
   pool.query(
     `SELECT
-       a.*,
+       app.*,
+       an.nome AS nome_animale,
+       an.tipo As tipo_animale,
        p.nome || ' ' || p.cognome AS proprietario_nome,
-       p.email                    AS proprietario_email,
+       p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email                    AS sitter_email,
-     FROM appuntamenti a
-     
-     JOIN animali p ON p.id = a.proprietario_id
-     JOIN sitter  s ON s.id = a.sitter_id
-     WHERE stato = $1;
-     ORDER BY p.data_appuntamento DESC`,
+       s.email AS sitter_email,
+     FROM appuntamenti app
+     JOIN animali an ON an.id = app.animale_id
+     JOIN users p ON p.d = an.proprietario_id
+     JOIN users s ON s.id = a.sitter_id
+     WHERE app.stato = $1;
+     ORDER BY app.data_appuntamento DESC`,
      [stato]);
 // Restituisce un singolo appuntamento con i dettagli di proprietario e libro
 const findById = (id) =>
   pool.query(
     `SELECT
-       a.*,
+       app.*,
+       an.nome AS nome_animale,
+       an.tipo As tipo_animale,
        p.nome || ' ' || p.cognome AS proprietario_nome,
-       p.email                    AS proprietario_email,
+       p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email                    AS sitter_email,
-     FROM appuntamenti a
-     JOIN animali an ON an.id = a.animale_id
-     JOIN proprietari p  ON an.proprietario_id = p.id
-     JOIN sitter  s ON sitter_id = s.id
-     WHERE a.id = $1`,
+       s.email AS sitter_email,
+     FROM appuntamenti app
+     JOIN animali an ON an.id = app.animale_id
+     JOIN users p ON p.id = an.proprietario_id
+     JOIN users s ON s.id app.sitter_id
+     WHERE app.id = $1`,
     [id]
   );
 
@@ -74,7 +81,7 @@ const create = ({ animale_id, sitter_id, data_appuntamento }) =>
 // annulla l'appuntamento(admin)
 const annulla = (id) =>
   pool.query(`
-    UPDATE appuntamenro
+    UPDATE appuntamenti
     SET stato = 'annullato'
     WHERE id = $1
     RETURNING *

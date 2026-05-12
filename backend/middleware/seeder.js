@@ -1,4 +1,4 @@
-const sitterModel = require('../models/sitters');
+const userModel = require('../models/users');
 const brcrypt = require('bcrypt');
 
 const SALT_ROUND = 12;
@@ -19,7 +19,7 @@ const seedAdmin = async () => {
         return;
     }
 
-    const verificaUtente = await sitterModel.findByEmail(email);
+    const verificaUtente = await userModel.findByEmail(email);
     if (verificaUtente.rows.length) {
         console.log('Admin giá presente.');
         return;
@@ -27,7 +27,7 @@ const seedAdmin = async () => {
 
     const hash = await brcrypt.hash(password, SALT_ROUND);
 
-    await sitterModel.create({
+    await userModel.create({
         nome, cognome, email, password:hash, ruolo: 'admin'
     })
 

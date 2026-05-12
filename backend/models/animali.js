@@ -18,8 +18,8 @@ const CREATE_TABLE = `
     id                  SERIAL       PRIMARY KEY,
     nome                VARCHAR(255) NOT NULL,
     tipo                VARCHAR(255) NOT NULL,
-    proprietario_id     INTEGER      NOT NULL REFERENCES proprietari(id)  ON DELETE CASCADE,
-    note                VARCHAR(255) 
+    proprietario_id     INTEGER      NOT NULL REFERENCES users(id)  ON DELETE CASCADE,
+    note                TEXT
     
   );
 `;
@@ -38,7 +38,7 @@ const findById = (id) =>
 
 
 const findByProprietarioId = (proprietario_id) =>
-  pool.query('SELECT * FROM animali WHERE proprietario_id = $1', [isbn]);
+  pool.query('SELECT * FROM animali WHERE proprietario_id = $1', [proprietario_id]);
 
 // ── Query di scrittura ────────────────────────────────────────
 
@@ -60,7 +60,7 @@ const update = (id, { nome, tipo, note }) =>
     `UPDATE animali
      SET nome             = COALESCE($1, nome),
          tipo             = COALESCE($2, tipo),
-          note            = COALESCE($3, note)
+         note            = COALESCE($3, note)
      WHERE id = $4
      RETURNING *`,
     [nome, tipo, note, id]

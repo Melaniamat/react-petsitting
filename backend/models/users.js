@@ -5,16 +5,16 @@
 const pool = require('../config/db');
 
 const CREATE_TABLE = `
-  CREATE TABLE IF NOT EXISTS sitters (
+  CREATE TABLE IF NOT EXISTS users (
     id            SERIAL        PRIMARY KEY,
     nome          VARCHAR(100)  NOT NULL,
     cognome       VARCHAR(255)  NOT NULL,
     email         VARCHAR(255)  UNIQUE NOT NULL,
     password      VARCHAR(255)  NOT NULL,
-    ruolo         VARCHAR(20)   NOT NULL DEFAULT 'utente'
-                  CHECK (ruolo IN ('admin', 'utente')),
-    stato                       VARCHAR(20) NOT NULL DEFAULT 'abilitato'
-    CHECK (stato IN ('abilitato', 'disabilitato')),
+    ruolo         VARCHAR(25)   NOT NULL DEFAULT 'sitter'
+                  CHECK (ruolo IN ('admin', 'sitter', 'padrone')),
+    stato                       VARCHAR(20) NOT NULL DEFAULT 'attivo'
+    CHECK (stato IN ('attivo', 'disabilitato')),
     token_version INTEGER       NOT NULL DEFAULT 0
   );
 `;
@@ -24,25 +24,25 @@ const init = () => pool.query(CREATE_TABLE);
 // Restituisce tutti gli utenti (senza password)
 const findAll = () =>
   pool.query(
-    'SELECT id, nome, cognome, email, ruolo, stato, token_version FROM sitters ORDER BY id'
+    'SELECT id, nome, cognome, email, ruolo, stato, token_version FROM users ORDER BY id'
   );
 
 // Restituisce un singolo utente per id (senza password)
 const findById = (id) =>
   pool.query(
-    'SELECT id, nome, cognome, email, ruolo, stato, token_version FROM sitters WHERE id = $1',
+    'SELECT id, nome, cognome, email, ruolo, stato, token_version FROM users WHERE id = $1',
     [id]
   );
 
 // Restituisce un utente per email — include la password perché serve al login
 const findByEmail = (email) =>
-  pool.query('SELECT * FROM sitters WHERE email = $1', [email]);
+  pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
 // Inserisce un nuovo utente.
 // RETURNING esclude la password dalla risposta.
-const create = ({ nome, cognome, email, password, ruolo = 'utente' , stato ='abilitato'}) =>
+const create = ({ nome, cognome, email, password, ruolo = 'sitter' , stato ='attivo'}) =>
   pool.query(
-    `INSERT INTO sitters (nome, cognome, email, password, ruolo, stato)
+    `INSERT INTO users (nome, cognome, email, password, ruolo, stato)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING id, nome, cognome, email, ruolo, stato`,
     [nome, cognome, email, password, ruolo, stato]
@@ -51,12 +51,12 @@ const create = ({ nome, cognome, email, password, ruolo = 'utente' , stato ='abi
 // Aggiornamento parziale dei campi anagrafici (COALESCE = aggiorna solo i campi inviati)
 const update = (id, { nome, cognome, email, ruolo, stato }) =>
   pool.query(
-    `UPDATE sitters
+    `UPDATE users
      SET nome    = COALESCE($1, nome),
          cognome = COALESCE($2, cognome),
          email   = COALESCE($3, email),
          ruolo   = COALESCE($4, ruolo),
-         token_version = token_version + 1
+         token_version = token_version + 1,
          ruolo   = COALESCE($6, stato)
      WHERE id = $5
      RETURNING id, nome, cognome, email, ruolo, stato`,
@@ -66,10 +66,10 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
 //aggiorna stato sitter, solo per admin
   const updateStato = (id) =>
   pool.query(`
-    UPDATE sitters
-    SET stato = 'disabilitato'
+    UPDATE users
+    SET stato = 'disabilitato', token_version = token_version +1,
     WHERE id = $1
-    RETURNING *
+    RETURNING id, nome, cognome, email, ruolo, stato, token_version
     `,[id]
   );
 
@@ -79,11 +79,11 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
       a.*, 
       p.nome AS nome_proprietario, 
       p.cognome AS cognome_proprietario,
-      an.nome AS nome_animale
+      an.nome AS nome_animale,
       an.tipo AS tipo
       FROM appuntamenti a
       JOIN animali an ON a.animale_id = an.id
-      JOIN proprietari p ON an.proprietario_id = p.id
+      JOIN users p ON an.proprietario_id = p.id
       WHERE a.sitter_id = $1
   `,[id]);
 
@@ -98,7 +98,7 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
     app.stato
     FROM appuntamenti app
     JOIN animali a ON app.animale_id = a.id
-    JOIN proprietari p ON a.proprietario_id = p.id
+    JOIN users p ON a.proprietario_id = p.id
     WHERE app.sitter_id = $1; `,[id]);
 
 // Aggiorna la password E incrementa token_version.
@@ -107,7 +107,7 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
 // il middleware lo rifiuterà perché il numero non coincide più.
 const updatePassword = (id, hashedPassword) =>
   pool.query(
-    `UPDATE sitters
+    `UPDATE users
      SET password      = $1,
          token_version = token_version + 1
      WHERE id = $2
@@ -122,7 +122,7 @@ const updatePassword = (id, hashedPassword) =>
 // quindi la query di verifica in autenticato() non troverà nulla
 // e restituirà 401 automaticamente.
 const remove = (id) =>
-  pool.query('DELETE FROM sitters WHERE id = $1 RETURNING id', [id]);
+  pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
 
 // ── Esportazione ──────────────────────────────────────────────
 module.exports = {

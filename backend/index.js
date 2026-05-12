@@ -7,7 +7,7 @@
 const express      = require('express');
 const errorHandler = require('./middleware/errorHandler');
 const helmet       = require('helmet');
-const rateLimit    = require('express-rate-limit');
+//const rateLimit    = require('express-rate-limit');
 const seedAdmin    = require('./middleware/seeder');
 const cors = require('cors'); // Decommentare quando si collega il frontend
 
@@ -15,17 +15,16 @@ require('dotenv').config(); // Carica le variabili da .env in process.env
 
 // Importiamo i model SOLO per inizializzare le tabelle all'avvio.
 // Non li usiamo direttamente qui: ci servono solo per chiamare .init()
-const proprietariModel   = require('./models/proprietari');
-const sittersModel = require('./models/sitters')
+const userModel = require('./models/users')
 const animaliModel    = require('./models/animali');
 const appuntamentiModel = require('./models/appuntamenti');
 
 // // Importiamo i router: ogni file routes gestisce un gruppo di endpoint
-const sittersRoutes   = require('./routes/sitters.routes');
-const proprietariRoutes   = require('./routes/proprietari.routes');
+const authRoutes = require('./routes/auth.routes')
+const userRoutes = require('./routes/user.routes')
 const animaliRoutes    = require('./routes/animali.routes');
 const appuntamentiRoutes = require('./routes/appuntamenti.routes');
-// const libriMassiviRoutes   = require('./routes/libriMassivi.routes');
+
 
 const app  = express();
 const port = process.env.PORT;
@@ -33,11 +32,11 @@ const port = process.env.PORT;
 // ── Rate Limiter Globale ──────────────────────────────────────
 // Limita ogni IP a 100 richieste ogni 15 minuti.
 // Protegge da attacchi di tipo brute-force e DDoS basilari.
-const limiterGlobale = rateLimit({
+/*const limiterGlobale = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: { successo: false, errore: 'Troppe richieste, riprova tra qualche minuto' }
-});
+});*/
 
 // ── Middleware Globali ────────────────────────────────────────
 // express.json() legge il body JSON delle richieste (POST, PATCH)
@@ -57,7 +56,7 @@ app.use(cors({
 }));
 
 
-app.use(limiterGlobale);
+//app.use(limiterGlobale);
 
 // ── Route di test ─────────────────────────────────────────────
 // Endpoint rapido per verificare che il server sia raggiungibile
@@ -67,8 +66,8 @@ app.get('/', (req, res) => {
 
 // ── Route principali ─────────────────────────────────────────
 // Ogni router gestisce il proprio gruppo di URL con prefisso /api/...
-app.use('/api/sitters',   sittersRoutes);
-app.use('/api/proprietari', proprietariRoutes);
+app.use() //auth
+app.use() //user
 app.use('/api/animali',    animaliRoutes);
 app.use('/api/appuntamenti', appuntamentiRoutes);
 
@@ -93,8 +92,7 @@ app.use(errorHandler);
 // quindi quelle tabelle devono già esistere.
 const start = async () => {
   try {
-    await sittersModel.init();
-    await proprietariModel.init();
+    await userModel.init();
     await animaliModel.init();
     await appuntamentiModel.init();
 
