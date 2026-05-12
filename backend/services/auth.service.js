@@ -72,7 +72,7 @@ async function me(token){
     }
 
     return {
-        user: result.rows[0];
+        user: result.rows[0]
     }
 }
 

@@ -5,8 +5,8 @@
 const router     = require('express').Router();
 const { body, param } = require('express-validator');
 const validate   = require('../middleware/validate');
-const controller = require('../controller/proprietari.controller');
-const { autenticato, soloAdmin, soloSéOAdmin, soloProprietari } = require('../middleware/auth');
+const controller = require('../controller/users.controller');
+const { autenticato, soloAdmin, soloSéOAdmin } = require('../middleware/auth');
 const limiter    = require('express-rate-limit');
 
 // Rate limiter specifico per login e registrazione:
@@ -43,10 +43,6 @@ const regolaRegistra = [
       throw new Error('La password deve contenere almeno una maiuscola, una minuscola, un numero e un carattere speciale');
     return true;
   }),
-
-  // FIX #2 — il campo "ruolo" è stato rimosso dalla validazione.
-  // Anche se il client lo invia, il service lo ignora e imposta sempre 'utente'.
-  // Il ruolo si modifica solo tramite PATCH /:id da un admin autenticato.
 ];
 
 const regolaLogin = [
@@ -114,25 +110,25 @@ router.post('/login',    limiterAuth, regolaLogin,    validate, controller.login
 // ── Route protette ────────────────────────────────────────────
 
 // Solo admin può vedere la lista completa degli utenti
-router.get('/',  controller.getAll);
+router.get('/', autenticato,controller.getAll);
 
 // FIX #6 — solo se Admin: solo l'utente stesso o un admin
 // può leggere i dati di un profilo
 router.get('/:id', autenticato, soloSéOAdmin, regolaId, validate, controller.getById);
 
-router.get('/:id/animali', autenticato, soloSéOAdmin,soloProprietari, regolaId, validate, controller.getAnimaliAssegnati);
+router.get('/:id/animali', autenticato, soloSéOAdmin, regolaId, validate, controller.getAnimali);
 
-
+router.get('/:id/appuntamenti', autenticato, soloSéOAdmin, regolaId, validate, controller.getAppuntamenti);
 
 // FIX #3 — solo se Admin: solo l'utente stesso o un admin
 // può modificare un profilo
 router.patch('/:id', autenticato, soloSéOAdmin, regolaAggiorna, validate, controller.aggiorna);
 
+//aggiorna stato sitter(solo Admin)
+router.patch('/:id/stato' , autenticato, soloAdmin, regolaId, validate, controller.aggiornaStato)
 
 
-//FIX 7# endpoint dedicato per la promozione
-router.patch('/:id/promuovi' , autenticato, soloAdmin, regolaPromuovi, validate, controller.aggiorna)
-
+// Solo admin può eliminare un utente
 router.delete('/:id',  regolaId, validate, controller.elimina);
 
 // ── Esportazione ──────────────────────────────────────────────

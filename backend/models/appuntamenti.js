@@ -6,8 +6,8 @@ const CREATE_TABLE = `
     animale_id                   INTEGER     NOT NULL REFERENCES animali(id) ON DELETE CASCADE,
     sitter_id                    INTEGER     NOT NULL REFERENCES users(id)  ON DELETE CASCADE,
     data_appuntamento            DATE        NOT NULL DEFAULT CURRENT_DATE,
-    stato                       VARCHAR(20) NOT NULL DEFAULT 'attivo'
-                                CHECK (stato IN ('attivo', 'annullato', 'completato')),
+    stato                       VARCHAR(20) NOT NULL DEFAULT 'pending'
+                                CHECK (stato IN ('pending', 'attivo', 'annullato', 'completato')),
     created_at                  TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 `;

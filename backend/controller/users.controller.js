@@ -2,12 +2,13 @@
 // controller/utente.controller.js
 // ============================================================
 
-const sitterService = require('../services/sitters.service');
+const userService = require('../services/user.service');
+const authService = require('../services/auth.service')
 
 // POST /registra
 const registra = async (req, res, next) => {
   try {
-    const utente = await sitterService.registra(req.body);
+    const utente = await authService.register(req.body);
     res.status(201).json({ successo: true, dati: utente });
   } catch (err) { next(err); }
 };
@@ -15,7 +16,7 @@ const registra = async (req, res, next) => {
 // POST /login
 const login = async (req, res, next) => {
   try {
-    const token = await sitterService.login(req.body);
+    const token = await authService.login(req.body);
     res.json({ successo: true, dati: token });
   } catch (err) { next(err); }
 };
@@ -23,21 +24,24 @@ const login = async (req, res, next) => {
 // GET /
 const getAll = async (req, res, next) => {
   try {
-    const utenti = await sitterService.getAll();
+    const utenti = await userService.getAll();
     res.json({ successo: true, dati: utenti });
   } catch (err) { next(err); }
 };
 
 const getAppuntamenti = async (req, res, next) => {
   try {
-    const utenti = await sitterService.getAppuntamenti();
+    const id = parseInt(req.params.id);
+    const utenti = await userService.getAppuntamenti(id);
     res.json({ successo: true, dati: utenti });
   } catch (err) { next(err); }
 };
 
-const getAnimaliAssegnati = async (req, res, next) => {
+const getAnimali = async (req, res, next) => {
+  
   try {
-    const utenti = await sitterService.getAnimaliAssegnati();
+    const id = parseInt(req.params.id);
+    const utenti = await userService.getAnimali(id);
     res.json({ successo: true, dati: utenti });
   } catch (err) { next(err); }
 };
@@ -48,7 +52,15 @@ const getAnimaliAssegnati = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const utente = await sitterService.getById(id);
+    const utente = await userService.getById(id);
+    res.json({ successo: true, dati: utente });
+  } catch (err) { next(err); }
+};
+
+const getByEmail = async (req, res, next) => {
+  try {
+    const email= req.params.email;
+    const utente = await userService.getById(id);
     res.json({ successo: true, dati: utente });
   } catch (err) { next(err); }
 };
@@ -57,7 +69,7 @@ const getById = async (req, res, next) => {
 const aggiorna = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const utente = await sitterService.aggiorna(id, req.body);
+    const utente = await userService.aggiorna(id, req.body);
     res.json({ successo: true, dati: utente });
   } catch (err) { next(err); }
 };
@@ -66,7 +78,7 @@ const aggiorna = async (req, res, next) => {
 const aggiornaStato = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const sitter = await sitterService.aggiornaStato(id);
+    const sitter = await userService.aggiornaStato(id);
     res.json({ successo: true, dati: utente });
   } catch (err) { next(err); }
 };
@@ -75,9 +87,9 @@ const aggiornaStato = async (req, res, next) => {
 const elimina = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const risultato = await sitterService.elimina(id);
+    const risultato = await userService.elimina(id);
     res.json({ successo: true, dati: risultato });
   } catch (err) { next(err); }
 };
 
-module.exports = { registra, login, getAll,getAnimaliAssegnati,getAppuntamenti, getById, aggiorna, aggiornaStato, elimina };
+module.exports = { registra, login, getAll,getAnimali,getAppuntamenti, getById,getByEmail, aggiorna, aggiornaStato, elimina };
