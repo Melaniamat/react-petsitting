@@ -30,11 +30,11 @@ const app  = express();
 const port = process.env.PORT;
 
 // ── Rate Limiter Globale ──────────────────────────────────────
-// Limita ogni IP a 100 richieste ogni 15 minuti.
+// Limita ogni IP a 1000 richieste ogni 5 minuti.
 // Protegge da attacchi di tipo brute-force e DDoS basilari.
 /*const limiterGlobale = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 5 * 60 * 1000,
+  max: 1000,
   message: { successo: false, errore: 'Troppe richieste, riprova tra qualche minuto' }
 });*/
 
