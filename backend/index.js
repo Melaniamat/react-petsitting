@@ -67,7 +67,7 @@ app.get('/', (req, res) => {
 
 // ── Route principali ─────────────────────────────────────────
 // Ogni router gestisce il proprio gruppo di URL con prefisso /api/...
-app.use('/api/sitter',   sittersRoutes);
+app.use('/api/sitters',   sittersRoutes);
 app.use('/api/proprietari', proprietariRoutes);
 app.use('/api/animali',    animaliRoutes);
 app.use('/api/appuntamenti', appuntamentiRoutes);
