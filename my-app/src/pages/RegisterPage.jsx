@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { login as sittersLogin,register as sittersRegisters } from '../api/services/api'
+import { register} from '../api/services/auth'
 import { useNavigate, Link} from 'react-router-dom'
 
 function RegisterPage(){
+    const [nome, setNome] = useState('');
+    const [cognome, setCognome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errore, setErrore] = useState(null);
@@ -14,7 +16,7 @@ function RegisterPage(){
         e.preventDefault();
         setErrore('')
         try{
-            await authApi.registra(email, password)
+            await register(nome, cognome,email, password)
             setSuccess(true)
             setTimeout( () => navigate('/login', 1500))
             navigate('/')
@@ -42,8 +44,10 @@ function RegisterPage(){
             <div className='auth-card'>
                 <h1>REGISTRA</h1>
                 <form onSubmit={handleSubmit}>
-                    <input type="email" placeholder='Email'value={email} onChange={e => setEmail(e.target.value)} required/>
-                    <input type="password" placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} required/>
+                    <input className="form-control"type="text" placeholder='Nome'value={nome}onChange={e => setNome(e.target.value)} required/>
+                    <input className="form-control"type="text" placeholder='Cognome'value={cognome} onChange={e => setCognome(e.target.value)} required/>
+                    <input className="form-control"type="email" placeholder='Email'value={email} onChange={e => setEmail(e.target.value)} required/>
+                    <input  className="form-control"type="password" placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} required/>
                     {errore && <p className='errore'>{errore}</p>}
                     <button type='submit'>Registrati</button>
                 </form>

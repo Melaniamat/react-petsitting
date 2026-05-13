@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext} from 'react'
 import { AuthContext } from './AuthContext';
-import { login as sittersLogin,register as sittersRegisters } from '../api/services/api'
+import { login as apiLogin, register as apiRegister } from '../api/services/auth'
 
 
 // ── Provider ──────────────────────────────────────────────────
@@ -8,12 +8,42 @@ import { login as sittersLogin,register as sittersRegisters } from '../api/servi
 export function AuthProvider({ children }) {
 
   const [utente, setUtente] = useState(null)
+  const [loading, setLoading] = useState( true);
 
 
   // Controlla se il token è scaduto all'avvio
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if(!token) return
+    console.log('richiesta token' )
+    const token = localStorage.getItem("token");
+  
+
+    if(!token||token=='undefined') {
+
+      setLoading(false);
+      return;
+
+    }
+      
+
+    fetch('http://localhost:3000/api/auth/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+            
+        })
+        .then(res => {
+          
+            if (!res.ok) throw new Error('Token non valido');
+            return res.json();
+        })
+        .then(data => {
+            setUtente(data.user);
+            console.log("Questisono i dati:"+data)
+            setLoading(false);
+        })
+        .catch(() => {
+            localStorage.removeItem('token');
+            setUtente(null);
+            setLoading(false);
+        });
     
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -27,19 +57,25 @@ export function AuthProvider({ children }) {
 
   // Chiamata dopo un login riuscito: salva il token e legge il payload
   async function login (email,password){
-    const data= await sittersLogin(email,password);
-    localStorage.setItem("token",data.token);
-    setUtente(data.utente);
+    const data= await apiLogin(email,password);
+    localStorage.setItem("token",data.dati);
+    const utenteRecuperato = data.utente || data.user;
+    setUtente(utenteRecuperato);
     return data;
   }
-  async function register(){}
+
+  async function register(email, password) {
+        return await apiRegister(email, password);
+  }
+
   function logout(){
     localStorage.removeItem("token");
     setUtente(null);
   }
 
+const value = { utente, login, logout, register, loading };
   return (
-    <AuthContext.Provider value={{ token, utente, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
@@ -50,6 +86,7 @@ export function AuthProvider({ children }) {
 // usiamo questo hook che ha un nome più leggibile.
 export function useAuth() {
   const context = useContext(AuthContext)
+  console.log(context)
   if (!context) {
     throw new Error('useAuth deve essere usato all\'interno di un AuthProvider')
   }

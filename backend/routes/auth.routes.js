@@ -55,5 +55,6 @@ const regolaLogin = [
 // ── Route pubbliche (senza autenticazione) ────────────────────
 router.post('/registra', limiterAuth, regolaRegistra, validate, controller.registra);
 router.post('/login',    limiterAuth, regolaLogin,    validate, controller.login);
+router.get('/me',controller.me)
 
 module.exports = router;

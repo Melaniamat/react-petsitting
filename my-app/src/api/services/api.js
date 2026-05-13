@@ -20,9 +20,7 @@ if (!import.meta.env.VITE_API_URL) {
   )
 }
 
-function getToken() {
-  return localStorage.getItem('token')
-}
+
 
  export async function request(method, path, body = null) {
   const token = getToken()
@@ -63,32 +61,7 @@ function getToken() {
   return data.dati
 }
 
-export async function register(email, password){
-    const res = await fetch(`${BASE_URL}/sitters/registra`, {
-        method: 'POST',
-        headers: {'Content-Type' : 'application/json'},
-        body: JSON.stringify({email, password})
-    }) 
-    if(!res.ok){
-        const data = await res.json()
-        throw new Error(data.errore || 'Errore registrazione')
-    }
-    return res.json()
-}
 
-
-export async function login(email, password){
-     const res = await fetch(`${BASE_URL}/sitters/login`, {
-        method: 'POST',
-        headers: {'Content-Type' : 'application/json'},
-        body: JSON.stringify({email, password})
-    }) 
-    if(!res.ok){
-        const data = await res.json()
-        throw new Error(data.errore || 'Errore login')
-    }
-    return res.json()
-}
 
 /* // ── Libri ─────────────────────────────────────────────────────
 export const libriAPI = {

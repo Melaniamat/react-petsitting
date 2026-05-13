@@ -14,11 +14,11 @@ import LoginPage from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import RegisterPage from './pages/RegisterPage';
-//import Page from './pages/Page';
+import Page from './pages/Page';
 import Layout from './components/Layout';
 
 import './App.css';
-import Page from './pages/Page';
+
 
 // ── Componente App ───────────────────────────────────────────
 function App() {

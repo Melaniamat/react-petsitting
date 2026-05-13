@@ -18,4 +18,21 @@ const login = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports={login,registra}
+const me = async (req, res) => {
+    const authHeader = req.headers.authorization;
+   // res.status(200).json({h: req.headers });
+
+    try {
+        
+        const data = await authService.me(authHeader);
+        
+        res.status(200).json(data); 
+    } catch (err) {
+        // Gestione degli errori in base al tipo (401 per auth, 404 per non trovato)
+        const statusCode = err.statusCode || 500;
+        res.status(statusCode).json({ errore: err.message });
+    }
+        
+  };
+
+module.exports={login,registra, me}

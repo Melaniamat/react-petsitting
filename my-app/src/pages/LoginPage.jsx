@@ -14,7 +14,6 @@ function LoginPage(){
         setErrore('')
         try{
             await login(email, password);
-            console.log(5555);
             navigate('/')
         } catch(err){
              console.log(err);
