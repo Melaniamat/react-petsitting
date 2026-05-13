@@ -58,7 +58,7 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
          email   = COALESCE($3, email),
          ruolo   = COALESCE($4, ruolo),
          token_version = token_version + 1,
-         ruolo   = COALESCE($6, stato)
+         stato   = COALESCE($6, stato)
      WHERE id = $5
      RETURNING id, nome, cognome, email, ruolo, stato`,
     [nome, cognome, email, ruolo, id, stato]
@@ -68,7 +68,7 @@ const update = (id, { nome, cognome, email, ruolo, stato }) =>
   const updateStato = (id) =>
   pool.query(`
     UPDATE users
-    SET stato = 'disabilitato', token_version = token_version +1,
+    SET stato = 'disabilitato', token_version = token_version +1
     WHERE id = $1
     RETURNING id, nome, cognome, email, ruolo, stato, token_version
     `,[id]

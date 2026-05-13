@@ -25,7 +25,6 @@ function App() {
 
   return (
     <>
-      <h1>Contenuto principale container</h1>
       {/* <Routes>
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<RegisterPage/>}/>
@@ -36,6 +35,7 @@ function App() {
       <Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
+
         <Route path='/' element={<ProtectedRoute> <Layout /> </ProtectedRoute>}>
           <Route index element={<Page/>}/>
           

@@ -1,23 +1,13 @@
-// ============================================================
-// services/libri.service.js — Logica di business per i libri
-//
-// Il service sa COSA fare (regole, controlli, orchestrazione).
-// Delega al model il COME farlo sul database.
-// Questa separazione si chiama "separation of concerns":
-//   model  → dati
-//   service → regole di business
-//   controller → parsing HTTP (req/res)
-// ============================================================
 
 const appuntamentiModel = require('../models/appuntamenti');
 const userModel = require('../models/users');
 const animaleModel = require('../models/animali');
 
 // Crea un nuovo appuntamento dopo aver verificato che l'ISBN non sia già presente.
-const crea = async (dati) => {
+const crea = async (dati, utente_id) => {
 
-  const animale= await animaleModel.findById(dati.animale_id);
-  const sitter= await userModel.findById(dati.sitter_id);
+  const animale = await animaleModel.findById(dati.animale_id);
+  const sitter = await userModel.findById(dati.sitter_id);
 
 
   if (!animale.rows.length || !sitter.rows.length ) {
@@ -26,12 +16,10 @@ const crea = async (dati) => {
     throw err;
   }
 
-  if(!sitter.stato ==='abilitato'){
-
-    const err = new Error('sitter non abilitato');
+  if(sitter.rows[0]?.stato !== 'attivo'){
+    const err = new Error('Sitter non abilitato');
     err.statusCode = 403;
     throw err;
-
   }
   
   const appuntamento = await appuntamentiModel.create(dati);
@@ -40,14 +28,14 @@ const crea = async (dati) => {
 
 // Restituisce tutti gli appuntamenti
 const getAll = async () => {
-  await appuntamentiModel.aggiornaStato;
+  await appuntamentiModel.aggiornaStato();
   const result = await appuntamentiModel.findAll();
   return result.rows;
 };
 
 const getFiltrati = async (stato) => {
-  await appuntamentiModel.aggiornaStato
-  const result = await appuntamentiModel.findAllByStato();
+  await appuntamentiModel.aggiornaStato();
+  const result = await appuntamentiModel.findAllByStato(stato);
   return result.rows;
 };
 

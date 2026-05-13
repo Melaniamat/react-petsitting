@@ -21,11 +21,8 @@ const login = async (req, res, next) => {
 const me = async (req, res) => {
     const authHeader = req.headers.authorization;
    // res.status(200).json({h: req.headers });
-
     try {
-        
         const data = await authService.me(authHeader);
-        
         res.status(200).json(data); 
     } catch (err) {
         // Gestione degli errori in base al tipo (401 per auth, 404 per non trovato)

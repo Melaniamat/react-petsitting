@@ -29,9 +29,9 @@ const regolaCrea = [
 // Tutte le routes
 router.post('/',                 autenticato, regolaCrea, soloSéOAdmin, validate, controller.crea);
 router.get('/',                  autenticato, soloAdmin, controller.getAll);
-router.get('/:stato',            autenticato, soloAdmin,controller.getAllByStato);
+router.get('/stato/:stato',      autenticato, soloAdmin,controller.getAllByStato);
 router.get('/:id',               autenticato, regolaId, validate, controller.getById);
-router.patch('/:id',             autenticato,  soloSéOAdmin,regolaId, validate, controller.getById);
+router.patch('/:id',             autenticato,  soloSéOAdmin,regolaId, validate, controller.aggiorna);
 router.patch('/:id/annulla',     autenticato,  soloSéOAdmin,regolaId, validate, controller.annulla);
 router.delete('/:id',            autenticato,  soloAdmin, regolaId, validate, controller.elimina);
 

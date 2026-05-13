@@ -1,9 +1,9 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
+import { useAuth } from "../context/useAuth";
 
 function Layout() {
 
-  const { user, logout } = useAuth()
+  const { utente, logout } = useAuth()
 
   return (
     <>
@@ -12,11 +12,10 @@ function Layout() {
           <span className="logo">📝 TODO APP</span>
           <nav>
             <NavLink to="/" className={({isActive}) => isActive ? 'attivo' : ''}>Home</NavLink>
-            <NavLink to="/stats" className={({isActive}) => isActive ? 'attivo' : ''}>Login</NavLink>
           </nav>
 
           <div className="layout-user">
-            {user && <span className="user-email">{user.email}</span>}
+            {utente && <span className="user-email">{utente.email}</span>}
             <button onClick={logout} className="btn-logout">Logout</button>
           </div>
         </header>

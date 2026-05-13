@@ -19,7 +19,6 @@ function RegisterPage(){
             await register(nome, cognome,email, password)
             setSuccess(true)
             setTimeout( () => navigate('/login', 1500))
-            navigate('/')
         } catch(err){
             setErrore(err.message)
         }

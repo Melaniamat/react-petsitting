@@ -83,7 +83,7 @@ router.patch('/:id/stato' , autenticato, soloAdmin, regolaId, validate, controll
 
 
 // Solo admin può eliminare un utente
-router.delete('/:id',  regolaId, validate, controller.elimina);
+router.delete('/:id',  autenticato, soloAdmin, regolaId, validate, controller.elimina);
 
 // ── Esportazione ──────────────────────────────────────────────
 module.exports = router;

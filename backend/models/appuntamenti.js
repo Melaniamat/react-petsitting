@@ -26,7 +26,7 @@ const findAll = () =>
        p.nome || ' ' || p.cognome AS proprietario_nome,
        p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email AS sitter_email,
+       s.email AS sitter_email
      FROM appuntamenti app
      JOIN animali an ON an.id = app.animale_id
      JOIN users p ON p.id = an.proprietario_id
@@ -42,12 +42,12 @@ const findAllByStato = (stato) =>
        p.nome || ' ' || p.cognome AS proprietario_nome,
        p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email AS sitter_email,
+       s.email AS sitter_email
      FROM appuntamenti app
      JOIN animali an ON an.id = app.animale_id
-     JOIN users p ON p.d = an.proprietario_id
-     JOIN users s ON s.id = a.sitter_id
-     WHERE app.stato = $1;
+     JOIN users p ON p.id = an.proprietario_id
+     JOIN users s ON s.id = app.sitter_id
+     WHERE app.stato = $1
      ORDER BY app.data_appuntamento DESC`,
      [stato]);
 // Restituisce un singolo appuntamento con i dettagli di proprietario e libro
@@ -60,11 +60,11 @@ const findById = (id) =>
        p.nome || ' ' || p.cognome AS proprietario_nome,
        p.email AS proprietario_email,
        s.nome || ' ' || s.cognome AS sitter_nome,
-       s.email AS sitter_email,
+       s.email AS sitter_email
      FROM appuntamenti app
      JOIN animali an ON an.id = app.animale_id
      JOIN users p ON p.id = an.proprietario_id
-     JOIN users s ON s.id app.sitter_id
+     JOIN users s ON s.id = app.sitter_id
      WHERE app.id = $1`,
     [id]
   );

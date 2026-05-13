@@ -23,7 +23,7 @@ if (!import.meta.env.VITE_API_URL) {
 
 
  export async function request(method, path, body = null) {
-  const token = getToken()
+  const token = sessionStorage.getItem('token')
 
   const options = {
     method,

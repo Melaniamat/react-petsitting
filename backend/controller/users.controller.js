@@ -46,7 +46,7 @@ const getById = async (req, res, next) => {
 const getByEmail = async (req, res, next) => {
   try {
     const email= req.params.email;
-    const utente = await userService.getById(id);
+    const utente = await userService.getByEmail(email);
     res.json({ successo: true, dati: utente });
   } catch (err) { next(err); }
 };
@@ -65,7 +65,7 @@ const aggiornaStato = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
     const sitter = await userService.aggiornaStato(id);
-    res.json({ successo: true, dati: utente });
+    res.json({ successo: true, dati: sitter });
   } catch (err) { next(err); }
 };
 

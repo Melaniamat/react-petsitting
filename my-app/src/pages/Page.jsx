@@ -2,7 +2,7 @@
 function Page(){
     return(
         <>
-       Page
+       <h1 style={{ color: 'black'}}>contenuto di page</h1>
         </>
     )
 

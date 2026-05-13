@@ -10,7 +10,7 @@ const crea = async (req, res, next) => {
     // FIX #4 — utente_id viene letto da req.utente.id (il JWT verificato),
     // NON dal body della richiesta. In questo modo un utente non può
     // creare un prestito intestato a un altro utente.
-    const utente_id = req.utente.id;
+    const utente_id = req.utente.userId;
     const prestito = await appuntamentiService.crea(req.body, utente_id);
     res.status(201).json({ successo: true, dati: prestito });
   } catch (err) { next(err); }
@@ -28,7 +28,7 @@ const getAll = async (req, res, next) => {
 const getAllByStato = async (req, res, next) => {
   try {
 
-    const prestiti = await appuntamentiService.getAllByStato(req.stato);
+    const prestiti = await appuntamentiService.getAllByStato(req.params.stato);
     res.json({ successo: true, dati: prestiti });
   } catch (err) { next(err); }
 };
