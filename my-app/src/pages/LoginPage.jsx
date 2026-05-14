@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth} from '../context/useAuth'
 import { useNavigate, Link} from 'react-router-dom'
+import Navbar from '../components/Navbar';
 
 function LoginPage(){
     const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ function LoginPage(){
     
     return(
         <>
+        
         <div className='auth-container'>
             <div className='auth-card'>
                 <h1>LOGIN</h1>

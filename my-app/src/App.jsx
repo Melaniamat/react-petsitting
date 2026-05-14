@@ -15,8 +15,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import RegisterPage from './pages/RegisterPage';
 import Page from './pages/Page';
-import Layout from './components/Layout';
-
+import HomePage from './pages/HomePage';
+import Layout from './components/Layout'; 
+import ProtectedLayout from './components/ProtectedLayout';
+import AboutPage from './pages/AboutPage';
 import './App.css';
 
 
@@ -33,11 +35,22 @@ function App() {
       <Route path='*' element={<NotFound/>}/>
     </Routes>  */}
       <Routes>
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/register' element={<RegisterPage />} />
+        
+        <Route path='/' element={<Layout/> }>
+          <Route path='login' element={<LoginPage />} />
+          <Route path='register' element={<RegisterPage />} />
+          <Route index element={<HomePage />} />
+          <Route path="about" element={<AboutPage/>} />
+          
+          
 
-        <Route path='/' element={<ProtectedRoute> <Layout /> </ProtectedRoute>}>
-          <Route index element={<Page/>}/>
+          
+          
+
+        </Route>
+
+        <Route path='/protected' element={<ProtectedRoute> <ProtectedLayout /> </ProtectedRoute>}>
+          {/* qui mettere le route delle pagine protette(componenti) */}
           
 
         </Route>

@@ -3,16 +3,17 @@ import { useAuth } from "../context/useAuth";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 
-function Layout() {
 
-    
+
+function ProtectedLayout() {
+
+  const { utente, logout } = useAuth()
 
   return (
     <>
       <div className="layout">
         <header className="layout-header">
           <Navbar/>
-          
          
         </header>
 
@@ -24,4 +25,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default ProtectedLayout;

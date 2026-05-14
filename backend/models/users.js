@@ -41,7 +41,7 @@ const findByEmail = (email) =>
 
 // Inserisce un nuovo utente.
 // RETURNING esclude la password dalla risposta.
-const create = ({ nome, cognome, email, password, ruolo = 'sitter' , stato ='attivo'}) =>
+const create = ({ nome, cognome, email, password, ruolo , stato ='attivo'}) =>
   pool.query(
     `INSERT INTO users (nome, cognome, email, password, ruolo, stato)
      VALUES ($1, $2, $3, $4, $5, $6)

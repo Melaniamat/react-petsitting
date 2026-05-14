@@ -7,6 +7,7 @@ function RegisterPage(){
     const [cognome, setCognome] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [ruolo, setRuolo] = useState('');
     const [errore, setErrore] = useState(null);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
@@ -15,8 +16,14 @@ function RegisterPage(){
     async function handleSubmit(e){
         e.preventDefault();
         setErrore('')
+        if (!ruolo) {
+            setErrore("Per favore, seleziona un ruolo.");
+            return;
+        }
         try{
-            await register(nome, cognome,email, password)
+            console.log(e.target.value)
+            await register(nome, cognome,email, password, ruolo)
+            
             setSuccess(true)
             setTimeout( () => navigate('/login', 1500))
         } catch(err){
@@ -47,6 +54,11 @@ function RegisterPage(){
                     <input className="form-control"type="text" placeholder='Cognome'value={cognome} onChange={e => setCognome(e.target.value)} required/>
                     <input className="form-control"type="email" placeholder='Email'value={email} onChange={e => setEmail(e.target.value)} required/>
                     <input  className="form-control"type="password" placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} required/>
+                    <label htmlFor="ruolo">Selziona un ruolo:</label>
+                    <select name="ruolo"  value={ruolo} onChange={e => setRuolo(e.target.value)}className='d-block' id="ruolo" required> Ruolo:
+                        <option value="sitter">sitter</option>
+                        <option value="padrone">padrone</option>
+                    </select>
                     {errore && <p className='errore'>{errore}</p>}
                     <button type='submit'>Registrati</button>
                 </form>

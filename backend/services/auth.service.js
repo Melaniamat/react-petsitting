@@ -21,6 +21,7 @@ function generateToken(user) {
 
 // Registrazione user
 async function register({ nome, cognome, email, password, ruolo }) {
+  console.log(ruolo)
   const esiste = await userModel.findByEmail(email);
   if (esiste.rows.length > 0) {
     const err = new Error('Email già presente');
